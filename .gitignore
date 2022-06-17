@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+.history/
+experiments/
+logs/
+data/
+
+#Saved and downloaded data files
+*.nt.gz
+*.npz
+*.pkl
+*.ipynb
+*.npy
+*.pyc
+
+GNN/experiments/
+GNN/__pycache__/

@@ -1,0 +1,16 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aug: False
+batch_size: 32
+dataset: WN18RR_v3_ind
+experiment_name: WN18RR_v3_fi
+file_paths: {'train': 'GNN/../data/WN18RR_v3_ind/train.txt', 'test': 'GNN/../data/WN18RR_v3_ind/test.txt'}
+gpu: 1
+hop: 3
+main_dir: GNN
+model_path: GNN/experiments/WN18RR_v3_fi/best_graph_classifier.pth
+residual: False
+un_hop: 1
+============================================
+Testing time used: 350.50946402549744 s
+MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.3064257116408259 | 0.14380165289256197 | 0.3487603305785124 |0.4628099173553719 | 0.687603305785124

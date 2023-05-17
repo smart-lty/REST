@@ -1,0 +1,108 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aggregate: pna
+aug: False
+batch_size: 12
+constrained_neg_prob: 0.0
+dataset: fb237_v3
+dropout: 0.1
+early_stop: 50
+emb_dim: 32
+enclosing_sub_graph: False
+exp_dir: GNN/experiments/fb237_v3_mlp
+experiment_name: fb237_v3_mlp
+gpu: 7
+hop: 3
+l2: 0.0001
+load_model: False
+loss: bce
+lr: 0.0005
+main_dir: GNN
+margin: 10
+max_links: 1000000
+message: gru
+num_epochs: 5
+num_gcn_layers: 6
+num_neg_samples_per_link: 1
+num_workers: 8
+optimizer: Adam
+residual: False
+train_file: train
+un_hop: 1
+update: mlp
+using_jk: False
+valid_file: valid
+============================================
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 430
+Total number of parameters: 369537
+Starting training ...
+====================================================================================================
+Run Time Error! Reduce batch size. Current batch size: 8
+============ Initialized logger ============
+add_traspose_rels: True
+aggregate: pna
+aug: False
+batch_size: 12
+constrained_neg_prob: 0.0
+dataset: fb237_v3
+dropout: 0.1
+early_stop: 50
+emb_dim: 32
+enclosing_sub_graph: False
+exp_dir: GNN/experiments/fb237_v3_mlp
+experiment_name: fb237_v3_mlp
+gpu: 7
+hop: 3
+l2: 0.0001
+load_model: False
+loss: bce
+lr: 0.0005
+main_dir: GNN
+margin: 10
+max_links: 1000000
+message: gru
+num_epochs: 5
+num_gcn_layers: 6
+num_neg_samples_per_link: 1
+num_workers: 8
+optimizer: Adam
+residual: False
+train_file: train
+un_hop: 1
+update: mlp
+using_jk: False
+valid_file: valid
+============================================
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 430
+Total number of parameters: 369537
+Starting training ...
+====================================================================================================
+Epoch 1 Training Performance:{'auc': 0.8808668711517091, 'auc_pr': 0.8801290937360311, 'acc': 0.7864450127877238} in 3988.487676382065 s 
+Epoch 1 Validation Performance:{'auc': 0.9396861333096228, 'auc_pr': 0.9375942782611119, 'acc': 0.8443482224247949} in 306.5609624385834 s 
+Epoch 1 Better models found w.r.t AUC-PR. Saved it!
+Epoch 1 with loss: 0.4340145350089067, best validation AUC-PR: 0.9375942782611119, weight_norm: 14.462563514709473 in 4295.10439658165 s 
+====================================================================================================
+Epoch 2 Training Performance:{'auc': 0.946408306451925, 'auc_pr': 0.9440814952689949, 'acc': 0.8728733459357277} in 3937.0749893188477 s 
+Epoch 2 Validation Performance:{'auc': 0.9655787226121793, 'auc_pr': 0.9622125539325286, 'acc': 0.9063354603463992} in 301.5770208835602 s 
+Epoch 2 Better models found w.r.t AUC-PR. Saved it!
+Epoch 2 with loss: 0.2956140900752678, best validation AUC-PR: 0.9622125539325286, weight_norm: 9.729378700256348 in 4238.708095788956 s 
+====================================================================================================
+Epoch 3 Training Performance:{'auc': 0.9626204290822634, 'auc_pr': 0.9597872488761741, 'acc': 0.8963360391415546} in 3995.2536141872406 s 
+Epoch 3 Validation Performance:{'auc': 0.9685909985715578, 'auc_pr': 0.9670135507636589, 'acc': 0.9004102096627165} in 312.2304844856262 s 
+Epoch 3 Better models found w.r.t AUC-PR. Saved it!
+Epoch 3 with loss: 0.24613331135653152, best validation AUC-PR: 0.9670135507636589, weight_norm: 6.964413642883301 in 4307.5397889614105 s 
+====================================================================================================
+Epoch 4 Training Performance:{'auc': 0.969971646899984, 'auc_pr': 0.9670700835915865, 'acc': 0.9095685533192484} in 4383.488438367844 s 
+Epoch 4 Validation Performance:{'auc': 0.9725133973570083, 'auc_pr': 0.9699766560159316, 'acc': 0.9152233363719234} in 369.26719331741333 s 
+Epoch 4 Better models found w.r.t AUC-PR. Saved it!
+Epoch 4 with loss: 0.21870820999538168, best validation AUC-PR: 0.9699766560159316, weight_norm: 5.414850234985352 in 4752.830307006836 s 
+====================================================================================================
+Epoch 5 Training Performance:{'auc': 0.9745119383103965, 'auc_pr': 0.9718511142403923, 'acc': 0.9181029689758701} in 4736.854246854782 s 
+Epoch 5 Validation Performance:{'auc': 0.9746120188564321, 'auc_pr': 0.9719545452140281, 'acc': 0.9165907019143118} in 380.2007985115051 s 
+Epoch 5 Better models found w.r.t AUC-PR. Saved it!
+Epoch 5 with loss: 0.20047772143302042, best validation AUC-PR: 0.9719545452140281, weight_norm: 4.578692436218262 in 5117.152992248535 s 
+====================================================================================================

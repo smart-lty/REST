@@ -1,0 +1,90 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aggregate: pna
+aug: False
+batch_size: 128
+constrained_neg_prob: 0.0
+dataset: nell_v1
+dropout: 0.2
+early_stop: 50
+emb_dim: 16
+enclosing_sub_graph: False
+exp_dir: GNN/experiments/nell_v1_add
+experiment_name: nell_v1_add
+gpu: 3
+hop: 3
+l2: 0.0001
+load_model: False
+loss: bce
+lr: 0.0005
+main_dir: GNN
+margin: 10
+max_links: 1000000
+message: add
+num_epochs: 10
+num_gcn_layers: 6
+num_neg_samples_per_link: 1
+num_workers: 8
+optimizer: Adam
+residual: False
+train_file: train
+un_hop: 1
+update: lstm
+using_jk: False
+valid_file: valid
+============================================
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 16, # Relations : 28
+Total number of parameters: 31041
+Starting training ...
+====================================================================================================
+Epoch 1 Training Performance:{'auc': 0.7355749181911173, 'auc_pr': 0.7604858149894914, 'acc': 0.6455088542777896} in 77.6468722820282 s 
+Epoch 1 Validation Performance:{'auc': 0.7400756143667298, 'auc_pr': 0.7361827323821428, 'acc': 0.5628019323671497} in 5.995867013931274 s 
+Epoch 1 Better models found w.r.t AUC-PR. Saved it!
+Epoch 1 with loss: 0.5922959164993183, best validation AUC-PR: 0.7361827323821428, weight_norm: 3.814225912094116 in 83.68104910850525 s 
+====================================================================================================
+Epoch 2 Training Performance:{'auc': 0.8477876812371685, 'auc_pr': 0.8637954892145825, 'acc': 0.7350117345850224} in 75.59367823600769 s 
+Epoch 2 Validation Performance:{'auc': 0.7906718943265888, 'auc_pr': 0.7813877904639965, 'acc': 0.6086956521739131} in 5.594624280929565 s 
+Epoch 2 Better models found w.r.t AUC-PR. Saved it!
+Epoch 2 with loss: 0.47436767574903127, best validation AUC-PR: 0.7813877904639965, weight_norm: 3.802903652191162 in 81.23251914978027 s 
+====================================================================================================
+Epoch 3 Training Performance:{'auc': 0.8762693538032578, 'auc_pr': 0.889349637448603, 'acc': 0.7733091529763175} in 75.76646685600281 s 
+Epoch 3 Validation Performance:{'auc': 0.8277030969217485, 'auc_pr': 0.820212632731957, 'acc': 0.7028985507246377} in 6.038333415985107 s 
+Epoch 3 Better models found w.r.t AUC-PR. Saved it!
+Epoch 3 with loss: 0.4352867297224096, best validation AUC-PR: 0.820212632731957, weight_norm: 3.7916362285614014 in 81.84514880180359 s 
+====================================================================================================
+Epoch 4 Training Performance:{'auc': 0.8923707967723371, 'auc_pr': 0.9038998915720261, 'acc': 0.7933646255600597} in 76.84914875030518 s 
+Epoch 4 Validation Performance:{'auc': 0.8470792783962287, 'auc_pr': 0.8366918674299313, 'acc': 0.7041062801932367} in 5.797060251235962 s 
+Epoch 4 Better models found w.r.t AUC-PR. Saved it!
+Epoch 4 with loss: 0.40877973388981176, best validation AUC-PR: 0.8366918674299313, weight_norm: 3.7810721397399902 in 82.68415689468384 s 
+====================================================================================================
+Epoch 5 Training Performance:{'auc': 0.9015514360931591, 'auc_pr': 0.9108865851821271, 'acc': 0.8063793471303605} in 76.77476739883423 s 
+Epoch 5 Validation Performance:{'auc': 0.8526395015052861, 'auc_pr': 0.8402989715093563, 'acc': 0.6992753623188406} in 5.50462532043457 s 
+Epoch 5 Better models found w.r.t AUC-PR. Saved it!
+Epoch 5 with loss: 0.39179648096496994, best validation AUC-PR: 0.8402989715093563, weight_norm: 3.771277904510498 in 82.31369924545288 s 
+====================================================================================================
+Epoch 6 Training Performance:{'auc': 0.9108445573644063, 'auc_pr': 0.9200510189860673, 'acc': 0.8201408150202688} in 76.071861743927 s 
+Epoch 6 Validation Performance:{'auc': 0.8630248080468623, 'auc_pr': 0.8502063541884861, 'acc': 0.7367149758454107} in 5.591359615325928 s 
+Epoch 6 Better models found w.r.t AUC-PR. Saved it!
+Epoch 6 with loss: 0.37512738801337575, best validation AUC-PR: 0.8502063541884861, weight_norm: 3.7615816593170166 in 81.69932627677917 s 
+====================================================================================================
+Epoch 7 Training Performance:{'auc': 0.9165920618332992, 'auc_pr': 0.9237403510336148, 'acc': 0.824941327074888} in 76.42817950248718 s 
+Epoch 7 Validation Performance:{'auc': 0.8821909496137598, 'auc_pr': 0.8634663534593708, 'acc': 0.7004830917874396} in 5.795224666595459 s 
+Epoch 7 Better models found w.r.t AUC-PR. Saved it!
+Epoch 7 with loss: 0.3623613795718631, best validation AUC-PR: 0.8634663534593708, weight_norm: 3.7525076866149902 in 82.26746034622192 s 
+====================================================================================================
+Epoch 8 Training Performance:{'auc': 0.9233488084401428, 'auc_pr': 0.9297912926575496, 'acc': 0.8358224877320247} in 76.79893231391907 s 
+Epoch 8 Validation Performance:{'auc': 0.8750262549884478, 'auc_pr': 0.8575331399451221, 'acc': 0.751207729468599} in 5.901872158050537 s 
+Epoch 8 with loss: 0.3483434746394286, best validation AUC-PR: 0.8634663534593708, weight_norm: 3.743739604949951 in 82.72566294670105 s 
+====================================================================================================
+Epoch 9 Training Performance:{'auc': 0.9279605684075757, 'auc_pr': 0.9336207573876283, 'acc': 0.8420098143802005} in 76.84440326690674 s 
+Epoch 9 Validation Performance:{'auc': 0.8887722000513432, 'auc_pr': 0.872316848988978, 'acc': 0.7801932367149759} in 6.007997989654541 s 
+Epoch 9 Better models found w.r.t AUC-PR. Saved it!
+Epoch 9 with loss: 0.3390264261413265, best validation AUC-PR: 0.872316848988978, weight_norm: 3.7352516651153564 in 82.89234948158264 s 
+====================================================================================================
+Epoch 10 Training Performance:{'auc': 0.9328740403812479, 'auc_pr': 0.9377750622567247, 'acc': 0.8484104971196927} in 79.39267086982727 s 
+Epoch 10 Validation Performance:{'auc': 0.8970162664239539, 'auc_pr': 0.8821964693226978, 'acc': 0.7898550724637681} in 5.9902403354644775 s 
+Epoch 10 Better models found w.r.t AUC-PR. Saved it!
+Epoch 10 with loss: 0.32874970258893194, best validation AUC-PR: 0.8821964693226978, weight_norm: 3.7266323566436768 in 85.4223849773407 s 
+====================================================================================================

@@ -1,27 +1,54 @@
-# Code for AAAI 2023
+# Learning Rule-Induced Subgraph Representations for Inductive Relation Prediction
 
-## People
-- Tianyu Liu `tianyuliu@miralab.ai`
-- Zijie Geng `zijiegeng@miralab.ai`
-- Jian Luo
-- Yue shen
+This is the official codebase of the paper Rule-Induced Subgraph Representations for Inductive Relation Prediction.
 
-## Environment
-1. `conda create -n rl_env python=3.7`
-2. `conda activate rl_env`
-3. `pip install -r requirements.txt` (Note: Some packages may not be available by using Pip Installation. Connect me with any problems.)
 
-## Training
+## File Tree
+- data `(Save the dataset in this folder.)`
+- GNN `(Core codes.)`
+  - experiments `Save files for a experiment.`
+  - manager `Trainer and Evaluator`
+  - model  `Message function, Aggregate function, Update function and the whole model architecture.`
+  - datasets.py  `Process data for training and evaluating.`
+  - test_ranking.py `test MRR / hits@1 / hits@3 / hits@10 for a trained model.`
+  - train.py `Training`
+  - utils.py 
+  - visualize.py `Visualization`
+- README.md
+- requirements.txt
+- ablation_study.sh
+- test_ranking.sh
+- train.sh
 
-### GNN Training
+## Setup
 
-For GNN training, please run `python GNN/train.py -d WN18RR_v1 --gpu 0 -e test`.
-(To adjust more parameters, please refer to `train.py` line `54` to line `113`. Feel Free to ADJUST them!)
+You can find the dependencies in `requirements.txt`. A script for installation is shown as follows:
 
-For GNN training with `nohup`, please run `nohup python GNN/train.py -d WN18RR_v1 --gpu 0 -e test > /dev/null 2>&1 &`.
+```shell
+conda create -n rest python=3.8
+conda activate rest
 
-#### Logs
-If you have trained a model with experiment name `exp`, you can find logs in `GNN/experiments/{exp}` folder. It contains model file, train logs, and training parameters.
+pip install torch==2.0.0+cu117 torchvision==0.15.1+cu116 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117
+pip install  dgl -f https://data.dgl.ai/wheels/cu117/repo.html
+pip install lmdb ipdb networkx scikit-learn scipy tqdm
+```
 
-### RL Training
-TBD.
+## Train and Reproduction
+
+To run REST, you can use the following command.
+```shell
+python GNN/train.py --gpu 0 -d WN18RR_v1 -e test --batch_size 512 -dim 32 --dropout 0 -l 6 --num_epochs 10
+```
+
+The configuration for all the results reported in the paper can be found in `GNN/experiments/`. To reproduce the results reported in the paper, just adjust the hyperparameters to the corresponding params. You can feel free to test other set of hyperparameters.
+
+After train a model with experiment name `{exp_name}`, you can test it by running the following command:
+```shell
+python GNN/test_ranking.py --gpu 0 -d WN18RR_v1_ind -e {exp_name}
+```
+
+## Visualization
+To visualize the learning rules by REST, you can run the following command:
+```shell
+python GNN/visualize.py
+```

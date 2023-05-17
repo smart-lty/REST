@@ -1,0 +1,16 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aug: False
+batch_size: 4
+dataset: nell_v3_ind
+experiment_name: nell_v3_fi
+file_paths: {'train': 'GNN/../data/nell_v3_ind/train.txt', 'test': 'GNN/../data/nell_v3_ind/test.txt'}
+gpu: 6
+hop: 3
+main_dir: GNN
+model_path: GNN/experiments/nell_v3_fi/best_graph_classifier.pth
+residual: False
+un_hop: 1
+============================================
+Testing time used: 941.9947288036346 s
+MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.6864258670348948 | 0.5166872682323856 | 0.8343634116192831 |0.9196538936959209 | 0.945389369592089

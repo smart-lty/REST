@@ -12,6 +12,7 @@ class Evaluator():
     def __init__(self, params, graph_classifier, data):
         self.params = params
         self.graph_classifier = graph_classifier
+        self.graph_classifier.params.device = params.device
         self.data = data
 
     def eval(self, save=False):
@@ -26,17 +27,15 @@ class Evaluator():
             for b_idx, batch in enumerate(dataloader):
 
                 pos_graph, pos_label, neg_graph, neg_label = self.params.move_batch_to_device(batch, self.params.device)
-                
                 score_pos = self.graph_classifier(pos_graph)
                 score_neg = self.graph_classifier(neg_graph)
-
-                # preds += torch.argmax(logits.detach().cpu(), dim=1).tolist()
                 pos_scores += score_pos.squeeze(1).detach().cpu().tolist()
                 neg_scores += score_neg.squeeze(1).detach().cpu().tolist()
                 pos_labels += pos_label.tolist()
                 neg_labels += neg_label.tolist()
-
+                
         auc = metrics.roc_auc_score(pos_labels + neg_labels, pos_scores + neg_scores)
         auc_pr = metrics.average_precision_score(pos_labels + neg_labels, pos_scores + neg_scores)
+        acc = metrics.accuracy_score(y_true=pos_labels + neg_labels, y_pred=[1 if i>=0.5 else 0 for i in pos_scores+neg_scores])
 
-        return {'auc': auc, 'auc_pr': auc_pr}
+        return {'auc': auc, 'auc_pr': auc_pr, 'acc': acc}

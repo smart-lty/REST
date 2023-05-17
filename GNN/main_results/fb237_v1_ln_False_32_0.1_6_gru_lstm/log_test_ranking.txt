@@ -1,0 +1,14 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aug: False
+batch_size: 4
+dataset: fb237_v1_ind
+experiment_name: fb237_v1_ln_False_32_0.1_6_gru_lstm
+file_paths: {'train': 'GNN/../data/fb237_v1_ind/train.txt', 'test': 'GNN/../data/fb237_v1_ind/test.txt'}
+gpu: 7
+hop: 3
+main_dir: GNN
+model_path: GNN/experiments/fb237_v1_ln_False_32_0.1_6_gru_lstm/best_graph_classifier.pth
+un_hop: 1
+============================================
+MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.4870742748311565 | 0.3804878048780488 | 0.5121951219512195 |0.6048780487804878 | 0.751219512195122

@@ -1,3 +1,4 @@
+import contextlib
 import logging
 from os import link
 from tqdm import tqdm
@@ -12,58 +13,62 @@ import scipy.sparse as ssp
 import networkx as nx
 import os
 import json
-from model.models import *
-from scipy.special import softmax
+from model.CGNN import CycleGNN
 
-np.random.seed(0)
+# ================================= Randomize Related Utils ==============================================
+def set_rand_seed(seed=1):
+    print("Random Seed: ", seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    # torch.backends.cudnn.enabled = False       
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    # torch.use_deterministic_algorithms(True)
+
 
 # ================================= Subgraph Related Utils ==============================================
 
 # save to database
 def links2subgraphs(A, graphs, params, max_label_value=None):
-    '''
+    """
     extract enclosing subgraphs, write map mode + named dbs
-    '''
+    """
     subgraph_sizes = []
-
-    # calculate the average sample size (in bytes) over 100 samples
     BYTES_PER_DATUM = get_average_subgraph_size(100, list(graphs.values())[0]['pos'], A, params) * 1.5
 
-    # number of links (bidirectional)
     links_length = 0
     for split_name, split in graphs.items():
         links_length += (len(split['pos']) + len(split['neg'])) * 2
     map_size = links_length * BYTES_PER_DATUM
-
-    # Structure for a database environment. An environment may contain multiple database.
-    # map_size: Maximum size database may grow to;
     env = lmdb.open(params.db_path, map_size=map_size, max_dbs=6)
-
     def extraction_helper(A, links, g_labels, split_env):
-
         with env.begin(write=True, db=split_env) as txn:
-            txn.put('num_graphs'.encode(), (len(links)).to_bytes(int.bit_length(len(links)), byteorder='little'))
+            txn.put('num_graphs'.encode(), len(links).to_bytes(int.bit_length(len(links)), byteorder='little'))
 
         with mp.Pool(processes=None, initializer=intialize_worker, initargs=(A, params, max_label_value)) as p:
             args_ = zip(range(len(links)), links, g_labels)
-            for (str_id, datum) in tqdm(p.imap(extract_save_subgraph, args_), total=len(links)):
+            for str_id, datum in tqdm(p.imap(extract_save_subgraph, args_), total=len(links)):
                 subgraph_sizes.append(datum['subgraph_size'])
-
                 with env.begin(write=True, db=split_env) as txn:
                     txn.put(str_id, serialize(datum))
 
     for split_name, split in graphs.items():
         logging.info(f"Extracting enclosing subgraphs for positive links in {split_name} set")
+
         labels = np.ones(len(split['pos']))
-        db_name_pos = split_name + '_pos'
+        db_name_pos = f'{split_name}_pos'
         split_env = env.open_db(db_name_pos.encode())
         extraction_helper(A, split['pos'], labels, split_env)
-
         logging.info(f"Extracting enclosing subgraphs for negative links in {split_name} set")
+
         labels = np.zeros(len(split['neg']))
-        db_name_neg = split_name + '_neg'
+        db_name_neg = f'{split_name}_neg'
         split_env = env.open_db(db_name_neg.encode())
         extraction_helper(A, split['neg'], labels, split_env)
+
 
 def sample_neg(adj_list, edges, num_neg_samples_per_link=1, max_size=1000000, constrained_neg_prob=0):
     pos_edges = edges
@@ -77,20 +82,14 @@ def sample_neg(adj_list, edges, num_neg_samples_per_link=1, max_size=1000000, co
     # sample negative links for train/test
     n, r = adj_list[0].shape[0], len(adj_list)
 
-    # distribution of edges across reelations
-    theta = 0.001
-    edge_count = get_edge_count(adj_list)
-    rel_dist = np.zeros(edge_count.shape)
-    idx = np.nonzero(edge_count)
-    rel_dist[idx] = softmax(theta * edge_count[idx])
-
     # possible head and tails for each relation
     valid_heads = [adj.tocoo().row.tolist() for adj in adj_list]
     valid_tails = [adj.tocoo().col.tolist() for adj in adj_list]
 
-    pbar = tqdm(total=len(pos_edges))
+    neg_n = 0
     while len(neg_edges) < num_neg_samples_per_link * len(pos_edges):
-        neg_head, neg_tail, rel = pos_edges[pbar.n % len(pos_edges)][0], pos_edges[pbar.n % len(pos_edges)][1], pos_edges[pbar.n % len(pos_edges)][2]
+        neg_head, neg_tail, rel = pos_edges[neg_n % len(pos_edges)][0], pos_edges[neg_n % len(pos_edges)][1], pos_edges[neg_n % len(pos_edges)][2]
+        
         if np.random.uniform() < constrained_neg_prob:
             if np.random.uniform() < 0.5:
                 neg_head = np.random.choice(valid_heads[rel])
@@ -104,9 +103,7 @@ def sample_neg(adj_list, edges, num_neg_samples_per_link=1, max_size=1000000, co
 
         if neg_head != neg_tail and adj_list[rel][neg_head, neg_tail] == 0:
             neg_edges.append([neg_head, neg_tail, rel])
-            pbar.update(1)
-
-    pbar.close()
+            neg_n += 1
 
     neg_edges = np.array(neg_edges)
     return pos_edges, neg_edges
@@ -115,7 +112,10 @@ def sample_neg(adj_list, edges, num_neg_samples_per_link=1, max_size=1000000, co
 def get_average_subgraph_size(sample_size, links, A, params):
     total_size = 0
     for (n1, n2, r_label) in links[np.random.choice(len(links), sample_size)]:
-        subgraph_nodes, subgraph_labels, subgraph_size = subgraph_extraction((n1, n2), r_label, A, params.hop, params.enclosing_sub_graph)
+        if params.aug:
+            subgraph_nodes, subgraph_labels, subgraph_size = aug_subgraph_extraction((n1, n2), r_label, A, params.hop, params.un_hop)
+        else:
+            subgraph_nodes, subgraph_labels, subgraph_size = subgraph_extraction((n1, n2), r_label, A, params.hop, params.enclosing_sub_graph)
         datum = {'subgraph_nodes': subgraph_nodes, 'subgraph_labels': subgraph_labels, 'subgraph_size': subgraph_size}
         total_size += len(serialize(datum))
     return total_size / sample_size
@@ -128,16 +128,54 @@ def intialize_worker(A, params, max_label_value):
 
 def extract_save_subgraph(args_):
     idx, (n1, n2, r_label), g_labels = args_
-
-    subgraph_nodes, subgraph_labels, subgraph_size = subgraph_extraction((n1, n2), r_label, A_, params_.hop, params_.enclosing_sub_graph)
-
-    # NOTE: data in the database; key: idx
+    if params_.aug:
+        subgraph_nodes, subgraph_labels, subgraph_size = aug_subgraph_extraction((n1, n2), r_label, A_, params_.hop, params_.un_hop)
+    else:
+        subgraph_nodes, subgraph_labels, subgraph_size = subgraph_extraction((n1, n2), r_label, A_, params_.hop, params_.enclosing_sub_graph)
     datum = {'subgraph_nodes': subgraph_nodes, 'subgraph_labels': subgraph_labels, 'subgraph_size': subgraph_size}
 
     # padding the length to be 8
     str_id = '{:08}'.format(idx).encode('ascii')
 
     return (str_id, datum)
+
+
+def aug_subgraph_extraction(ind, rel, A_list, enclosing_hop=3, unclosing_hop=1):
+    # bidirectional
+    A_incidence = incidence_matrix(A_list)
+    A_incidence += A_incidence.T
+
+    # type: set
+    root1_en = get_neighbor_nodes({ind[0]}, A_incidence, enclosing_hop)
+    root2_en= get_neighbor_nodes({ind[1]}, A_incidence, enclosing_hop)
+
+    # k1 hop enclosing subgraph
+    subgraph_nei_nodes_int = root1_en.intersection(root2_en)
+    
+    if len(subgraph_nei_nodes_int) == 0:
+        root1_en = get_neighbor_nodes({ind[0]}, A_incidence, enclosing_hop * 2)
+        root2_en= get_neighbor_nodes({ind[1]}, A_incidence, enclosing_hop * 2)
+        # k1 hop enclosing subgraph
+        subgraph_nei_nodes_int = root1_en.intersection(root2_en)
+        root1_un = get_neighbor_nodes({ind[0]}, A_incidence, unclosing_hop)
+        root2_un= get_neighbor_nodes({ind[1]}, A_incidence, unclosing_hop)
+        
+        # k2 hop unclosing subgraph
+        subgraph_nei_nodes_un = root1_un.union(root2_un)
+        
+        subgraph_nodes = subgraph_nei_nodes_int.union(subgraph_nei_nodes_un)
+        subgraph_nodes = list(ind) + [i for i in subgraph_nodes if i not in ind]
+
+    else:
+        subgraph_nodes = list(ind) + [i for i in subgraph_nei_nodes_int if i not in ind]
+    
+    subgraph_label = rel
+    
+    subgraph_size = len(subgraph_nodes)
+
+    assert len(subgraph_nodes) == len(set(subgraph_nodes))
+
+    return subgraph_nodes, subgraph_label, subgraph_size
 
 
 def subgraph_extraction(ind, rel, A_list, hop=1, enclosing_sub_graph=False):
@@ -152,35 +190,36 @@ def subgraph_extraction(ind, rel, A_list, hop=1, enclosing_sub_graph=False):
     # bidirectional
     A_incidence = incidence_matrix(A_list)
     A_incidence += A_incidence.T
-    
+
     # type: set
-    root1_neigh = get_neighbor_nodes(set([ind[0]]), A_incidence, hop)
-    root2_neigh = get_neighbor_nodes(set([ind[1]]), A_incidence, hop)
+    root1_neigh = get_neighbor_nodes({ind[0]}, A_incidence, hop)
+    root2_neigh = get_neighbor_nodes({ind[1]}, A_incidence, hop)
 
     subgraph_nei_nodes_int = root1_neigh.intersection(root2_neigh)
     subgraph_nei_nodes_un = root1_neigh.union(root2_neigh)
 
     # Extract subgraph | Roots being in the front is essential for labelling and the model to work properly.
+    # ! In the code of grail, actually, the extracted non-enclosing subgraph is not correct, as a lot of repeat nodes are included.
     if enclosing_sub_graph:
-        subgraph_nodes = list(ind) + list(subgraph_nei_nodes_int)
+        subgraph_nodes = list(ind) + [i for i in subgraph_nei_nodes_int if i not in ind]
     else:
-        subgraph_nodes = list(ind) + list(subgraph_nei_nodes_un)
+        subgraph_nodes = list(ind) + [i for i in subgraph_nei_nodes_un if i not in ind]
 
     subgraph_label = rel
 
     subgraph_size = len(subgraph_nodes)
+
+    assert len(subgraph_nodes) == len(set(subgraph_nodes))
 
     return subgraph_nodes, subgraph_label, subgraph_size
 
 
 def get_neighbor_nodes(roots, adj, h=1, max_nodes_per_hop=None):
     bfs_generator = _bfs_relational(adj, roots, max_nodes_per_hop)
-    lvls = list()
+    lvls = []
     for _ in range(h):
-        try:
+        with contextlib.suppress(StopIteration):
             lvls.append(next(bfs_generator))
-        except StopIteration:
-            pass
     return set().union(*lvls)
 
 
@@ -215,8 +254,7 @@ def _get_neighbors(adj, nodes):
     Directly copied from dgl.contrib.data.knowledge_graph"""
     sp_nodes = _sp_row_vec_from_idx_list(list(nodes), adj.shape[1])
     sp_neighbors = sp_nodes.dot(adj)
-    neighbors = set(ssp.find(sp_neighbors)[1])  # convert to set of indices
-    return neighbors
+    return set(ssp.find(sp_neighbors)[1])
 
 
 def _sp_row_vec_from_idx_list(idx_list, dim):
@@ -244,6 +282,7 @@ def get_edge_count(adj_list):
     for adj in adj_list:
         count.append(len(adj.tocoo().row.tolist()))
     return np.array(count)
+
 
 # ================================= Subgraph Related Utils ==============================================
 
@@ -292,13 +331,17 @@ def ssp_multigraph_to_dgl(graph, n_feats=None):
 def collate_dgl(samples):
     # The input `samples` is a list of pairs
     pos_subgraph, pos_label, neg_subgraphs, neg_labels = map(list, zip(*samples))
-
+    for i, subgraph in enumerate(pos_subgraph):
+        subgraph.edata["batch_id"] = torch.ones(subgraph.edata["type"].shape[0], dtype=torch.long) * i
     batched_pos_subgraph = dgl.batch(pos_subgraph)
     batched_pos_label = pos_label
 
     neg_subgraphs = [item for sublist in neg_subgraphs for item in sublist]
     neg_labels = [item for sublist in neg_labels for item in sublist]
 
+    for i, subgraph in enumerate(neg_subgraphs):
+        subgraph.edata["batch_id"] = torch.ones(subgraph.edata["type"].shape[0], dtype=torch.long) * i
+    
     batched_neg_subgraphs = dgl.batch(neg_subgraphs)
     batched_neg_labels = neg_labels
 
@@ -330,8 +373,6 @@ def send_graph_to_device(g, device):
         g.edata[l] = g.edata.pop(l).to(device)
     return g
 
-#  The following three functions are modified from networks source codes to
-#  accomodate diameter and radius for dirercted graphs
 
 # ================================= Graph Related Utils ==============================================
 
@@ -397,34 +438,31 @@ def save_to_file(directory, file_name, triplets, id2entity, id2relation):
 
 
 def initialize_experiment(params, file_name):
-    '''
+    """
     Makes the experiment directory, sets standard paths and initializes the logger
-    '''
-    params.main_dir = os.path.relpath(os.path.dirname(os.path.abspath(__file__))) #  os.path.join(os.path.relpath(os.path.dirname(os.path.abspath(__file__))), '..')
+    """
+    params.main_dir = os.path.relpath(os.path.dirname(os.path.abspath(__file__)))
     exps_dir = os.path.join(params.main_dir, 'experiments')
     if not os.path.exists(exps_dir):
         os.makedirs(exps_dir)
-
     params.exp_dir = os.path.join(exps_dir, params.experiment_name)
-
     if not os.path.exists(params.exp_dir):
         os.makedirs(params.exp_dir)
+    if file_name.endswith('test_auc.py'):
+        file_handler = logging.FileHandler(os.path.join(params.exp_dir, "log_test_auc.txt"))
 
-    if file_name == 'test_auc.py':
-        params.test_exp_dir = os.path.join(params.exp_dir, f"test_{params.dataset}_{params.constrained_neg_prob}")
-        if not os.path.exists(params.test_exp_dir):
-            os.makedirs(params.test_exp_dir)
-        file_handler = logging.FileHandler(os.path.join(params.test_exp_dir, f"log_test.txt"))
+    elif file_name.endswith('test_ranking.py'):
+        file_handler = logging.FileHandler(os.path.join(params.exp_dir, "log_test_ranking.txt"))
+
     else:
         file_handler = logging.FileHandler(os.path.join(params.exp_dir, "log_train.txt"))
+
     logger = logging.getLogger()
     logger.addHandler(file_handler)
-
     logger.info('============ Initialized logger ============')
-    logger.info('\n'.join('%s: %s' % (k, str(v)) for k, v
-                          in sorted(dict(vars(params)).items())))
-    logger.info('============================================')
+    logger.info('\n'.join(f'{k}: {str(v)}' for k, v in sorted(dict(vars(params)).items())))
 
+    logger.info('============================================')
     with open(os.path.join(params.exp_dir, "params.json"), 'w') as fout:
         json.dump(vars(params), fout)
 
@@ -437,17 +475,18 @@ def initialize_model(params, load_model=False):
     '''
 
     if load_model and os.path.exists(os.path.join(params.exp_dir, 'best_graph_classifier.pth')):
-        logging.info('Loading existing model from %s' % os.path.join(params.exp_dir, 'best_graph_classifier.pth'))
-        graph_classifier = torch.load(os.path.join(params.exp_dir, 'best_graph_classifier.pth')).to(device=params.device)
+        logging.info(f"Loading existing model from {os.path.join(params.exp_dir, 'best_graph_classifier.pth')}")
+
+        graph_classifier = torch.load(os.path.join(params.exp_dir, 'best_graph_classifier.pth'), map_location=params.device).to(device=params.device)
     else:
         relation2id_path = os.path.join(params.main_dir, f'../data/{params.dataset}/relation2id.json')
         with open(relation2id_path) as f:
             relation2id = json.load(f)
 
         logging.info('No existing model found. Initializing new model..')
-
-        graph_classifier = DirectedEdgeConv(params, relation2id).to(device=params.device)
+        graph_classifier = CycleGNN(params, relation2id).to(device=params.device)
 
     return graph_classifier
 
 # ================================= Initialization Related Utils ==============================================
+

@@ -1,0 +1,123 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aggregate: pna
+aug: False
+batch_size: 32
+constrained_neg_prob: 0.0
+dataset: fb237_v2
+dropout: 0.1
+early_stop: 50
+emb_dim: 32
+enclosing_sub_graph: False
+exp_dir: GNN/experiments/fb237_v2_add
+experiment_name: fb237_v2_add
+gpu: 2
+hop: 3
+l2: 0.0001
+load_model: False
+loss: bce
+lr: 0.0005
+main_dir: GNN
+margin: 10
+max_links: 1000000
+message: add
+num_epochs: 10
+num_gcn_layers: 6
+num_neg_samples_per_link: 1
+num_workers: 8
+optimizer: Adam
+residual: True
+train_file: train
+un_hop: 1
+update: lstm
+using_jk: False
+valid_file: valid
+============================================
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 400
+Total number of parameters: 198657
+Starting training ...
+====================================================================================================
+Run Time Error! Reduce batch size. Current batch size: 28
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 400
+Total number of parameters: 198657
+Starting training ...
+====================================================================================================
+Run Time Error! Reduce batch size. Current batch size: 24
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 400
+Total number of parameters: 198657
+Starting training ...
+====================================================================================================
+Run Time Error! Reduce batch size. Current batch size: 20
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 400
+Total number of parameters: 198657
+Starting training ...
+====================================================================================================
+Run Time Error! Reduce batch size. Current batch size: 16
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 400
+Total number of parameters: 198657
+Starting training ...
+====================================================================================================
+Run Time Error! Reduce batch size. Current batch size: 12
+No existing model found. Initializing new model..
+Device: cuda
+Input dim : 32, # Relations : 400
+Total number of parameters: 198657
+Starting training ...
+====================================================================================================
+Epoch 1 Training Performance:{'auc': 0.7254247714617351, 'auc_pr': 0.6866346487845403, 'acc': 0.6465242838073724} in 2502.193823337555 s 
+Epoch 1 Validation Performance:{'auc': 0.7841861607760179, 'auc_pr': 0.7282028597802461, 'acc': 0.5990566037735849} in 181.11281418800354 s 
+Epoch 1 Better models found w.r.t AUC-PR. Saved it!
+Epoch 1 with loss: 0.6410089674327761, best validation AUC-PR: 0.7282028597802461, weight_norm: 11.004913330078125 in 2683.3493201732635 s 
+====================================================================================================
+Epoch 2 Training Performance:{'auc': 0.8479964932568353, 'auc_pr': 0.8274128173435733, 'acc': 0.7528493685183284} in 2542.8806676864624 s 
+Epoch 2 Validation Performance:{'auc': 0.8738143187923118, 'auc_pr': 0.8471628891847026, 'acc': 0.7615780445969125} in 168.49977159500122 s 
+Epoch 2 Better models found w.r.t AUC-PR. Saved it!
+Epoch 2 with loss: 0.4860129871134981, best validation AUC-PR: 0.8471628891847026, weight_norm: 9.696483612060547 in 2711.441385746002 s 
+====================================================================================================
+Epoch 3 Training Performance:{'auc': 0.8996038413876434, 'auc_pr': 0.879829866510962, 'acc': 0.8119416777903276} in 2459.1832749843597 s 
+Epoch 3 Validation Performance:{'auc': 0.8871881702555835, 'auc_pr': 0.868553576038502, 'acc': 0.8130360205831904} in 166.01822686195374 s 
+Epoch 3 Better models found w.r.t AUC-PR. Saved it!
+Epoch 3 with loss: 0.3997761999426657, best validation AUC-PR: 0.868553576038502, weight_norm: 8.742725372314453 in 2625.2447764873505 s 
+====================================================================================================
+Epoch 4 Training Performance:{'auc': 0.921791813883166, 'auc_pr': 0.9040947448036646, 'acc': 0.8373036246021152} in 2760.768831014633 s 
+Epoch 4 Validation Performance:{'auc': 0.9265532276713868, 'auc_pr': 0.9089379960194311, 'acc': 0.8490566037735849} in 182.52117538452148 s 
+Epoch 4 Better models found w.r.t AUC-PR. Saved it!
+Epoch 4 with loss: 0.352469129850308, best validation AUC-PR: 0.9089379960194311, weight_norm: 8.012763977050781 in 2943.34499502182 s 
+====================================================================================================
+Epoch 5 Training Performance:{'auc': 0.9366319339104252, 'auc_pr': 0.921454634512863, 'acc': 0.8602525926686518} in 2896.506666660309 s 
+Epoch 5 Validation Performance:{'auc': 0.926851119041805, 'auc_pr': 0.9079446210378728, 'acc': 0.8580617495711835} in 182.54494762420654 s 
+Epoch 5 with loss: 0.3154546733569409, best validation AUC-PR: 0.9089379960194311, weight_norm: 7.433813095092773 in 3079.084759235382 s 
+====================================================================================================
+Epoch 6 Training Performance:{'auc': 0.9472151799401489, 'auc_pr': 0.934002859274232, 'acc': 0.8736009857274875} in 2714.4197132587433 s 
+Epoch 6 Validation Performance:{'auc': 0.9258684452865495, 'auc_pr': 0.9012760769243036, 'acc': 0.8331903945111492} in 183.23834538459778 s 
+Epoch 6 with loss: 0.2851891363489217, best validation AUC-PR: 0.9089379960194311, weight_norm: 6.977715015411377 in 2897.6936695575714 s 
+====================================================================================================
+Epoch 7 Training Performance:{'auc': 0.9519372819204295, 'auc_pr': 0.9403755144962374, 'acc': 0.8829962008419756} in 2534.8719329833984 s 
+Epoch 7 Validation Performance:{'auc': 0.9378216123499142, 'auc_pr': 0.9199534915391148, 'acc': 0.861492281303602} in 163.31242418289185 s 
+Epoch 7 Better models found w.r.t AUC-PR. Saved it!
+Epoch 7 with loss: 0.2722395364782346, best validation AUC-PR: 0.9199534915391148, weight_norm: 6.611263751983643 in 2698.227782011032 s 
+====================================================================================================
+Epoch 8 Training Performance:{'auc': 0.9594410995237322, 'auc_pr': 0.9495781986542644, 'acc': 0.8943423349419858} in 2685.2531003952026 s 
+Epoch 8 Validation Performance:{'auc': 0.9408005260540943, 'auc_pr': 0.9252975066837559, 'acc': 0.8812178387650086} in 181.49987888336182 s 
+Epoch 8 Better models found w.r.t AUC-PR. Saved it!
+Epoch 8 with loss: 0.24819478083383567, best validation AUC-PR: 0.9252975066837559, weight_norm: 6.308865547180176 in 2866.8195657730103 s 
+====================================================================================================
+Epoch 9 Training Performance:{'auc': 0.9621706949787652, 'auc_pr': 0.9535576242502399, 'acc': 0.8994763322723072} in 2998.8431165218353 s 
+Epoch 9 Validation Performance:{'auc': 0.950397776921289, 'auc_pr': 0.9378131085423466, 'acc': 0.8975128644939966} in 195.57060074806213 s 
+Epoch 9 Better models found w.r.t AUC-PR. Saved it!
+Epoch 9 with loss: 0.23765880914560975, best validation AUC-PR: 0.9378131085423466, weight_norm: 6.056208610534668 in 3194.466738462448 s 
+====================================================================================================
+Epoch 10 Training Performance:{'auc': 0.9672338527402141, 'auc_pr': 0.9596325403880525, 'acc': 0.910001026799466} in 2688.0622370243073 s 
+Epoch 10 Validation Performance:{'auc': 0.9454862469806319, 'auc_pr': 0.9261847483169281, 'acc': 0.8850771869639794} in 167.50412344932556 s 
+Epoch 10 with loss: 0.2201735016688007, best validation AUC-PR: 0.9378131085423466, weight_norm: 5.8394999504089355 in 2855.595018386841 s 
+====================================================================================================

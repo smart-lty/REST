@@ -1,0 +1,16 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aug: False
+batch_size: 2
+dataset: fb237_v3_ind
+experiment_name: fb237_v3_add
+file_paths: {'train': 'GNN/../data/fb237_v3_ind/train.txt', 'test': 'GNN/../data/fb237_v3_ind/test.txt'}
+gpu: 0
+hop: 3
+main_dir: GNN
+model_path: GNN/experiments/fb237_v3_add/best_graph_classifier.pth
+residual: False
+un_hop: 1
+============================================
+Testing time used: 1539.537325143814 s
+MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.49066055830052 | 0.315606936416185 | 0.584971098265896 |0.7260115606936416 | 0.8947976878612717

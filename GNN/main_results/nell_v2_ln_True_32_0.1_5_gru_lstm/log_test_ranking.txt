@@ -1,0 +1,28 @@
+============ Initialized logger ============
+add_traspose_rels: True
+aug: False
+batch_size: 8
+dataset: nell_v2_ind
+experiment_name: nell_v2_ln_True_32_0.1_5_gru_lstm
+file_paths: {'train': 'GNN/../data/nell_v2_ind/train.txt', 'test': 'GNN/../data/nell_v2_ind/test.txt'}
+gpu: 5
+hop: 3
+main_dir: GNN
+model_path: GNN/experiments/nell_v2_ln_True_32_0.1_5_gru_lstm/best_graph_classifier.pth
+un_hop: 1
+============================================
+MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.6965234455870672 | 0.5672268907563025 | 0.7857142857142857 |0.8697478991596639 | 0.9495798319327731
+============ Initialized logger ============
+add_traspose_rels: True
+aug: False
+batch_size: 8
+dataset: nell_v2_ind
+experiment_name: nell_v2_ln_True_32_0.1_5_gru_lstm
+file_paths: {'train': 'GNN/../data/nell_v2_ind/train.txt', 'test': 'GNN/../data/nell_v2_ind/test.txt'}
+gpu: 2
+hop: 3
+main_dir: GNN
+model_path: GNN/experiments/nell_v2_ln_True_32_0.1_5_gru_lstm/best_graph_classifier.pth
+un_hop: 1
+============================================
+MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.6965234455870672 | 0.5672268907563025 | 0.7857142857142857 |0.8697478991596639 | 0.9495798319327731

@@ -12,5 +12,4 @@ model_path: GNN/experiments/WN18RR_v4_fi/best_graph_classifier.pth
 residual: False
 un_hop: 1
 ============================================
-Testing time used: 844.8482873439789 s
 MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.7714195911189531 | 0.7361791462561231 | 0.7767669699090273 |0.7781665500349895 | 0.794961511546536

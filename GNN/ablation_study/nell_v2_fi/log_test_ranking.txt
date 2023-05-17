@@ -12,5 +12,4 @@ model_path: GNN/experiments/nell_v2_fi/best_graph_classifier.pth
 residual: False
 un_hop: 1
 ============================================
-Testing time used: 416.8370201587677 s
 MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.520963080727156 | 0.3445378151260504 | 0.6386554621848739 |0.7352941176470589 | 0.8613445378151261

@@ -12,5 +12,4 @@ model_path: GNN/experiments/fb237_v3_add/best_graph_classifier.pth
 residual: False
 un_hop: 1
 ============================================
-Testing time used: 1539.537325143814 s
 MRR | Hits@1 | Hits@3 | Hits@5 | Hits@10 : 0.49066055830052 | 0.315606936416185 | 0.584971098265896 |0.7260115606936416 | 0.8947976878612717

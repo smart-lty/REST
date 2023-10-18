@@ -1,6 +1,6 @@
 # Learning Rule-Induced Subgraph Representations for Inductive Relation Prediction
 
-This is the official codebase of the paper Rule-Induced Subgraph Representations for Inductive Relation Prediction.
+This is the official codebase of the paper Learning Rule-Induced Subgraph Representations for Inductive Relation Prediction in NeurIPS 2023.
 
 
 ## File Tree

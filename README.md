@@ -28,7 +28,7 @@ You can find the dependencies in `requirements.txt`. A script for installation i
 conda create -n rest python=3.8
 conda activate rest
 
-pip install torch==2.0.0+cu117 torchvision==0.15.1+cu116 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117
+pip install torch==2.0.0+cu117 torchvision==0.15.1+cu117 torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117
 pip install  dgl -f https://data.dgl.ai/wheels/cu117/repo.html
 pip install lmdb ipdb networkx scikit-learn scipy tqdm
 ```
